@@ -6,6 +6,7 @@ I'm putting this code out in the public domain (CC0), since I want someone who i
 
 ## Issues
 
+* There is no interface. Still trying to figuring out GDI+.
 * It takes ~120 ms to update the screen on my machine. Ideally, this would be as low as possible. But it seems that GDI+ is the bottleneck. Specifically `StretchBlt` and `graphics.DrawImage` are the main culprits. I heard switching to DirectX can improve performance, but I have no idea how that library works.
 * Lots of ghosting! Probably due to the low update rate.
 * Mouse seems to fliker a bit?

@@ -153,14 +153,6 @@ void Screen::CaptureDesktop(int sectionNum, RGBQUAD* outBuffer)
 	WCHAR filenamew[64];
 	swprintf_s(filenamew, L"test%d.png", sectionNum);
 	Gdiplus::Bitmap(hCaptureBitmap, NULL).Save(filenamew, &pngEncoder);
-	/*
-	FILE* f;
-	char filename[64];
-	sprintf_s(filename, "test%d.bin", sectionNum);
-	fopen_s(&f, filename, "wb");
-	fwrite(captureBuffer, sizeof(RGBQUAD), sectionStride, f);
-	fclose(f);
-	*/
 #endif
 	int status = desktopBmp->LockBits(&rect2, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, desktopBmp->GetPixelFormat(), &bitmapData);
 	if (status != Gdiplus::Ok)
@@ -176,14 +168,6 @@ void Screen::CaptureDesktop(int sectionNum, RGBQUAD* outBuffer)
 	BYTE* bmpAddr = (BYTE*)bitmapData.Scan0;
 
 	for (int y = 0; y < height; y++) {
-		/*
-		for (int x = 0; x < width; x++) {
-			uint32_t r = bmpAddr[x * 4 + 0] << 16;
-			uint32_t g = bmpAddr[x * 4 + 1] << 8;
-			uint32_t b = bmpAddr[x * 4 + 2];
-			((int*)captureBuffer)[y * width + x] = 0x7F000000 | r | g | b;
-		}
-		*/
 		// Stride can be positive or negative, so have to memcpy by line!
 		memcpy(&outBuffer[y * width], bmpAddr, width * 4);
 		bmpAddr += bitmapData.Stride; 
@@ -225,7 +209,6 @@ void Screen::UpdateFramebuffer(int sectionNum)
 		bool diff = (((int*)lastCaptureBuffer)[i] - ((int*)captureBuffer)[i - startIndex]) != 0;
 		diffCount += diff;
 		ageBuffer[i] = diff ? 0 : (ageBuffer[i] + 2); // I'm hoping this doesn't turn into an if/else, but a select operation.
-		//ageBuffer[i] = min(ageBuffer[i], 255);
 		buffer[i] = (min(max(((int)ageBuffer[i]), 0), 255) & 0xFF) << 24;
 	}
 	//printMsg("DiffCount = %d\n", diffCount);
@@ -261,12 +244,6 @@ void Screen::Refresh(int sectionNum)
 
 	int bmph = (windowSize.cy / numSections);
 	int bmpy = sectionNum * bmph;
-
-	/*
-	Gdiplus::Rect frect(0, bmpy, windowSize.cx, bmph + 1);
-	Gdiplus::SolidBrush brush(Gdiplus::Color::Transparent);
-	graphics.FillRectangle(&brush, frect);
-	*/
 
 	// This function is slow! Is there a faster way to do this?
 	graphics.DrawImage(bmp, 0, bmpy, 0, bmpy, windowSize.cx, bmph + 1, Gdiplus::UnitPixel);

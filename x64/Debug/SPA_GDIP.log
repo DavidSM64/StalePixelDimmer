@@ -1,3 +1,0 @@
-﻿  SPA_GDIP.cpp
-C:\Users\benep\source\repos\SPA_GDIP\SPA_GDIP\SPA_GDIP.cpp(112,17): warning C4244: 'return': conversion from 'WPARAM' to 'int', possible loss of data
-  SPA_GDIP.vcxproj -> C:\Users\benep\source\repos\SPA_GDIP\x64\Debug\SPA_GDIP.exe

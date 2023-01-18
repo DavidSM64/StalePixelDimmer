@@ -33,3 +33,6 @@
 
 # Images
 *.png
+
+# Build folder
+x64/*
